@@ -1,0 +1,51 @@
+.ff{
+    box-shadow: 0 4px 4px black;
+   margin: auto;
+    padding: 40px;
+    width: 50vw;
+    height: 70vh;
+
+    
+    
+   
+    position: absolute;
+  top: 20%;
+  left: 25%;
+  
+   
+  background-color: mistyrose;
+}
+.ol{
+   
+    width: 10vw;
+    border-radius: 10px;
+    color: whitesmoke;
+}
+
+@media screen and (max-width:1000px) {
+    .ff{
+        box-shadow: 0 4px 4px black;
+       margin: auto;
+        padding: 40px;
+        width: 80vw;
+        height: 70vh;
+        transform: translateY(8vh);
+    
+        
+        
+       
+        position: absolute;
+      top: 20%;
+      left: 10%;
+      
+       
+       background-color: mistyrose;
+    }
+    .ol{
+        background-color: lightskyblue;
+        width: 20vw;
+        border-radius: 10px;
+        color: whitesmoke;
+    }
+    
+}
