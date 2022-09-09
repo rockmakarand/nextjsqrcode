@@ -54,6 +54,8 @@ const handlePublish=()=>
      addDoc(articleRef, {
        gname: formData.gname,
        name: formData.name,
+       userId:user.uid,
+
 
       
       
@@ -109,16 +111,19 @@ if(user)
             gname,
             name,
             createdAt,
+            userId
            
           }) => 
           {
 
-            
+   if(user&&user.uid===userId)         
   return(
   
     
     <div className="  border mt-3 p-3 w-40 bg-red " key={id}>
+        <h2>Your QR CODE</h2>
         
+    
        
               
         <QRCode
