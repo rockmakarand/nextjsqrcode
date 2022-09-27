@@ -20,6 +20,7 @@ import { useQRCode } from 'next-qrcode';
 
 
 
+
 import { Button } from "react-bootstrap";
 import QRCode from "qrcode.react";
 import Head from "next/head";
@@ -28,7 +29,9 @@ import { async } from "@firebase/util";
 import Download from "./Download";
 import Deletepost from "./Deletepost";
 
+
 const Qr = () => {
+  
   const [user]=useAuthState(auth)
   const { Image } = useQRCode();
   const [qrid, setQrid]=useState("")
@@ -68,7 +71,7 @@ const Qr = () => {
         `https://api.shrtco.de/v2/shorten?url=${formData.gname}`
       );
       setShortenedLink(response.data.result.full_short_link);
-      alert(" shortcode got sucessfully ! click i=on PUBLISH to view the ShortUrl", { type: "success" });
+      alert(" shortcode got sucessfully ! click on PUBLISH to view the ShortUrl", { type: "success" });
       setProgress(0);
     } 
     
@@ -89,6 +92,8 @@ shortenedLink:"",
  });
 
  const [tran, setTran] = useState([]);
+ const [trans, setTrans] = useState([]);
+
  const [progress, setProgress] = useState(0);
 
 
@@ -109,6 +114,18 @@ shortenedLink:"",
      console.log(tran);
    });
  }, []);
+ useEffect(() => {
+  const traRef = collection(db, "payment");
+  const q = query(traRef, orderBy("createdAt", "desc"));
+  onSnapshot(q, (snapshot) => {
+    const tran = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+    setTrans(trans);
+    console.log(tran);
+  });
+}, []);
 
  const handleChange = (e) => {
    setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -132,7 +149,8 @@ const handlePublish= async()=>
     
    
    
-          const articleRef = collection(db, "qrcode");
+         
+      const articleRef = collection(db, "qrcode");
           addDoc(articleRef, {
             gname: formData.gname,
             name: formData.name,
@@ -145,7 +163,6 @@ const handlePublish= async()=>
           
             
         });
-     
 }
 const downloadQRCode = () => {
   const qrCodeURL = document.getElementById('id')
@@ -237,9 +254,10 @@ if(user)
             shortenedLink
            
           }) => 
+          
           {
 
-   if(user&&user.uid===userId)         
+   if(user&&user.uid===userId)    
   return(
   
     
@@ -263,6 +281,7 @@ if(user)
           <h5>{name}</h5>
 
           <br/>
+          
           <h5>{shortenedLink}</h5>
           <br/>
          

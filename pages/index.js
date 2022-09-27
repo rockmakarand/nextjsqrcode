@@ -3,6 +3,7 @@ import React from 'react'
 import Login from './Login'
 import Qr from './Qr'
 import Head from 'next/head'
+import Pay from './Pay'
 
 const index = () => {
   return (
@@ -68,6 +69,8 @@ const index = () => {
       </Head>
       <Login></Login>
       <Qr/>
+
+      <Pay/>
     </div>
   )
 }

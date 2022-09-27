@@ -4,6 +4,7 @@ import { getFirestore } from "firebase/firestore";
 import { getAuth, GoogleAuthProvider } from "firebase/auth";
 import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
 import { getMessaging, getToken, onMessage } from "firebase/messaging";
+import React from 'react'
 
 
 // TODO: Add SDKs for Firebase products that you want to use
@@ -22,13 +23,27 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
+const firebase = () => {
+  return (
+    <div>firebase</div>
+  )
+}
+
+
 export const storage = getStorage();
 
 
 export const db = getFirestore(app);
 export const auth = getAuth(app);
 export const provider = new GoogleAuthProvider();
+export default firebase
+
 
 // Handle incoming messages. Called when:
 // - a message is received while the app has focus
 // - the user clicks on an app notification created by a service worker `messaging.onBackgroundMessage` handler.
+
+
+
+
+
