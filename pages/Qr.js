@@ -114,18 +114,6 @@ shortenedLink:"",
      console.log(tran);
    });
  }, []);
- useEffect(() => {
-  const traRef = collection(db, "payment");
-  const q = query(traRef, orderBy("createdAt", "desc"));
-  onSnapshot(q, (snapshot) => {
-    const tran = snapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
-    setTrans(trans);
-    console.log(tran);
-  });
-}, []);
 
  const handleChange = (e) => {
    setFormData({ ...formData, [e.target.name]: e.target.value });

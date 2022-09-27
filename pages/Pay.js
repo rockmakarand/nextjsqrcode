@@ -13,8 +13,12 @@ import "aos/dist/aos.css"
 
 function App() {
     const[payid, setPayid]=useState("")
+    const[credit, setCredit]=useState("")
+
     const [tran, setTran] = useState([]);
     const [user]=useAuthState(auth)
+   
+
    
 
       const handlePublish= async()=>
@@ -33,6 +37,7 @@ function App() {
           createdAt: Timestamp.now().toDate(),
          
           userId:user.uid,
+          credit:credit
           
         
           
@@ -44,7 +49,7 @@ function App() {
     useEffect(()=>{
         Aos.init({duration:3000});
       },[]);
-
+    
       
   
 
@@ -90,20 +95,27 @@ async function displayRazorpay()
       amount: 100,
       order_id: response.data.id,
       currency: "INR",
-      name: "JEE Notes by NIT Trichy Students",
-     description: "Chemistry Notes",
+      name: "QR code scanner, URL shortner",
+     description: "Payment",
       handler: async function (response) {
           const data = {
             razorpaymentid: response.razorpay_payment_id,
-              razorpayOrderId: response.razorpay_order_id,
-              razorpaySignature: response.razorpay_signature,
+            razorpayOrderId: response.razorpay_order_id,
+            razorpaySignature: response.razorpay_signature,
               
           };
           setPayid(data.razorpaymentid)
+          setCredit(1);
           handlePublish()
-          setPayid("")
+          
+          console.log(data.razorpaymentid)
+        
 
           console.log(data)
+          console.log(credit)
+
+          
+
           
       },
      
