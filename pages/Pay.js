@@ -13,7 +13,7 @@ import "aos/dist/aos.css"
 
 function App() {
     const[payid, setPayid]=useState("")
-    const[credit, setCredit]=useState("")
+    const[credit, setCredit]=useState(0)
 
     const [tran, setTran] = useState([]);
     const [user]=useAuthState(auth)
