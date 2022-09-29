@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-key */
 import axios from 'axios'
 
 import { auth, db, storage } from "./firebase";
@@ -13,7 +14,7 @@ import "aos/dist/aos.css"
 
 function App() {
     const[payid, setPayid]=useState("")
-    const[credit, setCredit]=useState(0)
+    const[credit, setCredit]=useState("")
 
     const [tran, setTran] = useState([]);
     const [user]=useAuthState(auth)
@@ -49,6 +50,18 @@ function App() {
     useEffect(()=>{
         Aos.init({duration:3000});
       },[]);
+      useEffect(() => {
+        const traRef = collection(db, "payment");
+        const q = query(traRef, orderBy("createdAt", "desc"));
+        onSnapshot(q, (snapshot) => {
+          const tran = snapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          }));
+          setTran(tran);
+          console.log(tran);
+        });
+      }, []);
     
       
   
@@ -106,8 +119,12 @@ async function displayRazorpay()
           };
           setPayid(data.razorpaymentid)
           setCredit(1);
-          handlePublish()
-          
+          if(data.razorpaymentid)
+          {
+            alert("Got your Payment-ID, Click on submt to get ur credits and other features")
+          }
+
+     
           console.log(data.razorpaymentid)
         
 
@@ -117,35 +134,78 @@ async function displayRazorpay()
           
 
           
-      },
+      }
      
   };
 
   const paymentObject = new window.Razorpay(options);
   paymentObject.open();
 }
-return (
-   
-    <div className="App">
-        
-    <div className="mm">
-        
-    <div className="con">
-        <br/> <button onClick={displayRazorpay} className="ouu"><p style={{color:'white'}}>Make a Payment</p></button>
-      
-        
-         <br/>
-        <br/>
-        <br/>
-     </div>
-   
-        </div> 
+return(
+  <div>
+    {user&&!payid&& (
+                      <button onClick={displayRazorpay} className="ouu"><p style={{color:'white'}}>Make a Payment</p></button>
+                       
+                     )}
        
+    <br/>
+    <br/>
+    {user&&credit&& (
+                      <button onClick={handlePublish} className="ouu"><p style={{color:'white'}}>submit</p></button>
+                       
+                     )}
+     
+    {tran.map(
+    ({
+     userId, credit, payid
+     
+    }) => 
+    
+    {
+      if(user&&user.uid===userId)    
 
-
-        </div>
   
-  );
+  return(
+  
+  
+  <div >
+  
+  
+  
+  
+  
+   
+  
+    <br/>
+    <h1>Credits = {credit}</h1>
+    <h3>{payid}</h3>
+    <h2>(if credits = 1 then your payment is successful)</h2>
+
+  
+    <br/>
+    
+    
+    
+              
+        
+                  
+              
+  
+    
+  
+  </div>
+  
+  )
+  
+  
+     
+    }
+  )
+  }
+  
+  </div>
+)
+
 }
 
 export default App;
