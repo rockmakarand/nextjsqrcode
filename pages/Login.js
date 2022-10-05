@@ -11,6 +11,8 @@ import img1 from './ph.jpeg'
 import Image from 'next/image'
 import img2 from './goo.png'
 import img3 from './ph.jpeg'
+import css from "../styles/Home.module.css";
+
 
 
 
@@ -30,8 +32,8 @@ function Login() {
   if(!user)
   {
     return(
-     <div className="App">
-       <button onClick={signInWithGoogle} style={{backgroundColor:'#42368F', position:'relative', borderRadius:50, width:370,height:60,lineHeight:2, left:547,top:650, border: '5px solid #F8F1F1'}}><Image src={img2} width={30}
+     <div className={css.bg}>
+       <button onClick={signInWithGoogle} style={{backgroundColor:'transparent', position:'relative', borderRadius:50, width:370,height:60,lineHeight:2, left:747,top:300, border: '5px solid #F8F1F1'}}><Image src={img2} width={30}
       height={25} class="nn" position="relative"></Image>  &nbsp;&nbsp; Sign In With Google</button>
      
      </div>
