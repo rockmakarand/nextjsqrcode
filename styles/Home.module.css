@@ -127,3 +127,15 @@
     filter: invert(1);
   }
 }
+.bg {
+  background-image: url("../pages/k.jpeg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  height: 100vh;
+  width:99vw;
+padding: 100px;
+}
+.mm{
+  border-radius: 50px;
+  background-color: transparent;
+}
