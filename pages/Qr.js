@@ -9,10 +9,13 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { Timestamp,collection, onSnapshot, orderBy, query, addDoc } from "firebase/firestore";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import CopyToClipboard from "react-copy-to-clipboard";
+import Skeleton from 'react-loading-skeleton'
+import 'react-loading-skeleton/dist/skeleton.css'
 
 import axios from "axios";
 import Link from 'next/link';
 import { useQRCode } from 'next-qrcode';
+import k from './k.jpeg'
 //import QrReader from 'react-qr-reader';
 
 
@@ -35,11 +38,26 @@ const Qr = () => {
   const [user]=useAuthState(auth)
   const { Image } = useQRCode();
   const [qrid, setQrid]=useState("")
+  const [isLoading, setIsLoading] = useState(true);
+
 
   const[shortenedLink, setShortenedLink]=useState("")
   const handleErrorFile = (error) => {
     console.log(error);
   }
+
+  useEffect(() => {
+    const traRef = collection(db, "payment");
+    const q = query(traRef, orderBy("createdAt", "desc"));
+    onSnapshot(q, (snapshot) => {
+      const trans = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setTrans(trans);
+      console.log(trans);
+    });
+  }, []);
   const handleScanFile = (result) => {
       if (result) {
           setScanResultFile(result);
@@ -110,7 +128,11 @@ shortenedLink:"",
        id: doc.id,
        ...doc.data(),
      }));
+
      setTran(tran);
+     setIsLoading(false);
+     
+
      console.log(tran);
    });
  }, []);
@@ -164,20 +186,17 @@ const downloadQRCode = () => {
   aEl.click();
   document.body.removeChild(aEl);
 }
-
 if(user)
   return (
    
-    <div style={{marginLeft:50, marginRight:50 }} >
+    <div style={{marginLeft:50, marginRight:50}} >
+       {isLoading && <p>Loading...</p>}
+
      
-      <h1>QR CODE GENERATOR</h1>
-      <h1>{user?.displayName}</h1>  
-      <h1>{user?.email}</h1>  
-      <img src={user?.photoURL}/>
-      <br/>
+      <h1>Welcome, {user?.displayName||<Skeleton count={10} style={{backgroundColor:'#DFF6FF'}}/>}</h1>  
       <br/>
       
-      <button onClick={signUserOut}>Sign out</button>
+      <Button onClick={signUserOut} className="btn btn-success">Sign out</Button>
       <br/>
       <br/>
       <br/>
@@ -194,7 +213,7 @@ if(user)
             <br/>
             <br/>
             <Button
-            className=" bg-blue-500 text-white px-8 py-3 ml-4 rounded-md"
+         
             onClick={() => {
               fetchData();
              
@@ -231,7 +250,7 @@ if(user)
           </Button>
           <br/>
           <br/>
-          <div>
+      <div>
           {tran.map(
           ({
             id,
@@ -244,9 +263,11 @@ if(user)
           }) => 
           
           {
+           
 
-   if(user&&user.uid===userId)    
+   if(user&&user.uid===userId)  
   return(
+    
   
     
     <div className="  border mt-3 p-3 w-40 bg-red " key={id}  >
@@ -256,21 +277,27 @@ if(user)
        
        
           <QRCode
-      value={gname}
+      value={gname|| <Skeleton height={30} width={300} style={{backgroundColor:'DFF6FF'}} />}
       options={{
         type: 'image/jpeg',
         
        
       }}
+    
     />
           <br/>
           
           <br/>
-          <h5>{name}</h5>
+          {
+            trans.credit==1&&(
+              <h5>{name|| <Skeleton height={30} width={300} style={{backgroundColor:'#DFF6FF'}} />}</h5>
+            )
+          }
+         
 
           <br/>
           
-          <h5>{shortenedLink}</h5>
+          <h5>{shortenedLink|| <Skeleton height={30} width={300} style={{backgroundColor:'#DFF6FF'}} />}</h5>
           <br/>
          
           <br/>
@@ -294,6 +321,7 @@ if(user)
           
     
      </div>
+     
     
   )
   
@@ -364,7 +392,7 @@ if(user)
       </Head>
             
  </div>
-  )
+)
 }
 
 export default Qr
