@@ -330,7 +330,7 @@ useEffect(() => {
 {
  return(
  <div>
-   {user?.uid===userId&&payid&&(
+   {user.uid===userId&&payid&&(
     <Button
 
     onClick={() => {
