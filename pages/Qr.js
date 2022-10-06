@@ -1,9 +1,10 @@
+/* eslint-disable react/jsx-key */
 /* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable @next/next/no-img-element */
 /* eslint-disable @next/next/no-sync-scripts */
 import { auth, db, storage } from "./firebase";
 import React,{ useState, useEffect } from "react";
-import { signOut } from "firebase/auth";
+import { onAuthStateChanged, signOut } from "firebase/auth";
 import { useNavigate } from "react-router";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { Timestamp,collection, onSnapshot, orderBy, query, addDoc } from "firebase/firestore";
@@ -16,8 +17,10 @@ import axios from "axios";
 import Link from 'next/link';
 import { useQRCode } from 'next-qrcode';
 import k from './k.jpeg'
+
 //import QrReader from 'react-qr-reader';
 
+import useSessionStorage from './Localsto'
 
 
 
@@ -45,8 +48,7 @@ const Qr = () => {
   const handleErrorFile = (error) => {
     console.log(error);
   }
-
-  useEffect(() => {
+useEffect(() => {
     const traRef = collection(db, "payment");
     const q = query(traRef, orderBy("createdAt", "desc"));
     onSnapshot(q, (snapshot) => {
@@ -74,9 +76,7 @@ const Qr = () => {
         setScanResultWebCam(result);
     }
    }
-
-
-  const signUserOut = () => {
+const signUserOut = () => {
     signOut(auth).then(() => {
       localStorage.clear();
       
@@ -113,12 +113,11 @@ shortenedLink:"",
  const [trans, setTrans] = useState([]);
 
  const [progress, setProgress] = useState(0);
+ const[payid, setPayid]=useState("")
+ const item=useSessionStorage(payid);
+ 
+const[credit, setCredit]=useState("")
 
-
-
- const handleImageChange = (e) => {
-   setFormData({ ...formData, image: e.target.files[0] });
- };
 
  useEffect(() => {
    const traRef = collection(db, "qrcode");
@@ -140,7 +139,28 @@ shortenedLink:"",
  const handleChange = (e) => {
    setFormData({ ...formData, [e.target.name]: e.target.value });
  };
- 
+ const handlePublish1= async()=>
+ {
+  
+   
+     
+    
+    
+          
+   const articleRef = collection(db, "payment");
+   addDoc(articleRef, {
+   
+     payid:payid,
+
+     createdAt: Timestamp.now().toDate(),
+    
+     userId:user.uid,
+     credit:credit
+     
+   
+     
+ });
+ }
 
 const handlePublish= async()=>
 {
@@ -186,71 +206,183 @@ const downloadQRCode = () => {
   aEl.click();
   document.body.removeChild(aEl);
 }
-if(user)
-  return (
-   
-    <div style={{marginLeft:50, marginRight:50}} >
-       {isLoading && <p>Loading...</p>}
+const respon =  axios.get("http://localhost:3000/")
+
+
+ 
+async function displayRazorpay()
+{
+  const res = await loadScript(
+      "https://checkout.razorpay.com/v1/checkout.js"  
+  );
+
+  if (!res) {
+      alert("Razorpay SDK failed to load. Are you online?");
+      return;
+  }
+  function loadScript(src) {
+    return new Promise((resolve) => {
+        const script = document.createElement("script");
+        script.src = src;
+        script.onload = () => {
+            resolve(true);
+        };
+        script.onerror = () => {
+            resolve(false);
+        };
+        document.body.appendChild(script);
+    });
+}
+
+  const response = await axios.get("http://localhost:3000/")
+
+
+
+
+  const options = 
+  {
+      key: "rzp_test_bopFqT94fTv9Om", // Enter the Key ID generated from the Dashboard
+      amount: 100,
+      order_id: response.data.id,
+      currency: "INR",
+      name: "QR code scanner, URL shortner",
+     description: "Payment",
+      handler: async function (response) {
+          const data = {
+            razorpaymentid: response.razorpay_payment_id,
+            razorpayOrderId: response.razorpay_order_id,
+            razorpaySignature: response.razorpay_signature,
+              
+          };
+          setPayid(data.razorpaymentid)
+          setCredit(1);
+          
+          if(data.razorpaymentid)
+          {
+            alert("Got your Payment-ID, Click on submt to get ur credits and other features")
+          }
 
      
-      <h1>Welcome, {user?.displayName||<Skeleton count={10} style={{backgroundColor:'#DFF6FF'}}/>}</h1>  
-      <br/>
-      
-      <Button onClick={signUserOut} className="btn btn-success">Sign out</Button>
-      <br/>
-      <br/>
-      <br/>
-         <label>Website URL:  </label>
-         <br/>
-         <br/>
-            <input
-              type="text"
-              name="gname"
-              className="form-control"
-              value={formData.gname}
-              onChange={(e) => handleChange(e)}
-            />
-            <br/>
-            <br/>
-            <Button
-         
-            onClick={() => {
-              fetchData();
-             
-            }}
-          >
-            get shortURL
-          </Button>
-          <br/>
-          <br/>
-            <label htmlFor="">Name of QR Code:  </label>
+          console.log(data.razorpaymentid)
         
-        
-          <br/>
-          <br/>
-            <input
-              type="text"
-              name="name"
-              className="form-control"
-              value={formData.name}
-              onChange={(e) => handleChange(e)}
-            />
-            <br/>
-            <br/>
-          <br/>
-          <br/>
-              <Button
-            className="form-control"
-            variant="primary"
-            type="submit"
-            onClick={()=>handlePublish()}
-            
-          >
-            Publish
-          </Button>
-          <br/>
-          <br/>
+
+
+          
+
+          
+      }
+     
+  };
+
+  const paymentObject = new window.Razorpay(options);
+  paymentObject.open();
+}
+useEffect(() => {
+  const traRef = collection(db, "payment");
+  const q = query(traRef, orderBy("createdAt", "desc"));
+  onSnapshot(q, (snapshot) => {
+    const trans = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+    setTrans(trans);
+    console.log(trans);
+  });
+}, []);
+
+
+
+  return (
+    
+   
+  
+   
+    <div style={{marginLeft:50, marginRight:50}} >
       <div>
+
+
+  <div>
+     {isLoading && <p>Loading...</p>}
+
+     
+<h1>Welcome, {user?.displayName||<Skeleton count={10} style={{backgroundColor:'#DFF6FF'}}/>}</h1>  
+<br/>
+
+<Button onClick={signUserOut} className="btn btn-success">Sign out</Button>
+<br/>
+<br/>
+<br/>
+   <label>Website URL:  </label>
+   <br/>
+   <br/>
+      <input
+        type="text"
+        name="gname"
+        className="form-control"
+        value={formData.gname}
+        onChange={(e) => handleChange(e)}
+      />
+      <br/>
+      <br/>
+      {trans.map(({
+  credit, payid, userId
+}) =>
+{
+ return(
+ <div>
+   {user?.uid===userId&&payid&&(
+    <Button
+
+    onClick={() => {
+      fetchData();
+     
+    }}
+  >
+    get shortURL
+  </Button>
+  )}
+ </div>
+ )
+})}
+    
+    <br/>
+    <br/>
+      <label htmlFor="">Name of QR Code:  </label>
+  
+  
+    <br/>
+    <br/>
+      <input
+        type="text"
+        name="name"
+        className="form-control"
+        value={formData.name}
+        onChange={(e) => handleChange(e)}
+      />
+      <br/>
+      <br/>
+    <br/>
+    <br/>
+        <Button
+      className="form-control"
+      variant="primary"
+      type="submit"
+      onClick={()=>handlePublish()}
+      
+    >
+      Publish
+    </Button>
+    <br/>
+    <br/>
+
+  </div>
+ 
+
+</div>
+
+      
+      <div>
+         
           {tran.map(
           ({
             id,
@@ -259,53 +391,34 @@ if(user)
             createdAt,
             userId, 
             shortenedLink
-           
           }) => 
-          
-          {
-           
+        {
+if(user&&user.uid===userId)  
 
-   if(user&&user.uid===userId)  
   return(
-    
-  
-    
-    <div className="  border mt-3 p-3 w-40 bg-red " key={id}  >
-        
-        
-    
-       
-       
-          <QRCode
+  <div className="  border mt-3 p-3 w-40 bg-red " key={id}  >
+    <QRCode
       value={gname|| <Skeleton height={30} width={300} style={{backgroundColor:'DFF6FF'}} />}
-      options={{
-        type: 'image/jpeg',
-        
-       
-      }}
-    
     />
-          <br/>
+    <br/>
+        <br/>
+        <h5>{name|| <Skeleton height={30} width={300} style={{backgroundColor:'#DFF6FF'}} />}</h5>
+        <br/>
           
-          <br/>
-          {
-            trans.credit==1&&(
-              <h5>{name|| <Skeleton height={30} width={300} style={{backgroundColor:'#DFF6FF'}} />}</h5>
-            )
-          }
-         
-
-          <br/>
+            <h5>{shortenedLink|| <Skeleton height={30} width={300} style={{backgroundColor:'#DFF6FF'}} />}</h5>
           
-          <h5>{shortenedLink|| <Skeleton height={30} width={300} style={{backgroundColor:'#DFF6FF'}} />}</h5>
+          
           <br/>
          
           <br/>
-          <CopyToClipboard text={shortenedLink}>
-              <button className="btn btn-danger" onClick={()=>alert("copied to clipboard")}>
-                Copy shortURL to Clipboard
-              </button>
-            </CopyToClipboard> 
+        
+            <CopyToClipboard text={shortenedLink}>
+            <button className="btn btn-danger" onClick={()=>alert("copied to clipboard")}>
+              Copy shortURL to Clipboard
+            </button>
+          </CopyToClipboard> 
+          
+         
             <br/>
             <br/>  
           
@@ -314,22 +427,27 @@ if(user)
                        <Deletepost id={id}  />
                        
                      )}
-       
-                        
-                    
-
-          
-    
-     </div>
-     
-    
-  )
+       </div>
+    )
   
   
            
           }
         )
       }
+      <br/>
+      <br/>
+       {user&&!payid&& (
+                      <button onClick={displayRazorpay} className="ouu"><p style={{color:'white'}}>Make a Payment to get short url</p></button>
+                       
+                     )}
+       
+    <br/>
+    <br/>
+    {user&&credit&& (
+                      <button onClick={handlePublish1} className="ouu"><p style={{color:'white'}}>submit</p></button>
+                       
+                     )}
           </div>
           <Head>
         <title>
