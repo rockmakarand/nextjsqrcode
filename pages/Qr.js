@@ -324,13 +324,7 @@ useEffect(() => {
       />
       <br/>
       <br/>
-      {trans.map(({
-  credit, payid, userId
-}) =>
-{
- return(
- <div>
-   {user.uid===userId&&payid&&(
+    
     <Button
 
     onClick={() => {
@@ -340,10 +334,7 @@ useEffect(() => {
   >
     get shortURL
   </Button>
-  )}
- </div>
- )
-})}
+ 
     
     <br/>
     <br/>
@@ -405,18 +396,45 @@ if(user&&user.uid===userId)
         <h5>{name|| <Skeleton height={30} width={300} style={{backgroundColor:'#DFF6FF'}} />}</h5>
         <br/>
           
-            <h5>{shortenedLink|| <Skeleton height={30} width={300} style={{backgroundColor:'#DFF6FF'}} />}</h5>
-          
+           
+            {trans.map(({
+  credit, payid, userId
+}) =>
+{
+ return(
+ <div>
+   {user?.uid===userId&&payid&&(
+    <h5>{shortenedLink|| <Skeleton height={30} width={300} style={{backgroundColor:'#DFF6FF'}} />}</h5>
+    
+   
+  )}
+ </div>
+ )
+})}
           
           <br/>
          
           <br/>
+          
+          {trans.map(({
+  credit, payid, userId
+}) =>
+{
+ return(
+ <div>
+   {user?.uid===userId&&payid&&(
+   <CopyToClipboard text={shortenedLink}>
+   <button className="btn btn-danger" onClick={()=>alert("copied to clipboard")}>
+     Copy shortURL to Clipboard
+   </button>
+ </CopyToClipboard> 
+ 
+   
+  )}
+ </div>
+ )
+})}
         
-            <CopyToClipboard text={shortenedLink}>
-            <button className="btn btn-danger" onClick={()=>alert("copied to clipboard")}>
-              Copy shortURL to Clipboard
-            </button>
-          </CopyToClipboard> 
           
          
             <br/>
@@ -441,6 +459,7 @@ if(user&&user.uid===userId)
                       <button onClick={displayRazorpay} className="ouu"><p style={{color:'white'}}>Make a Payment to get short url</p></button>
                        
                      )}
+                     
        
     <br/>
     <br/>
