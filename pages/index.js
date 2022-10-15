@@ -12,13 +12,7 @@ const index = () => {
         <title>
          QR CODE Generator by NIT TRICHY students
         </title>
-        <meta
-          name="description"
-          content="Gautham Vijayan's Portfolio showcasing his React and React Native Projects. Also read Gautham Vijayan's 
-          blogs about 
-          Stripe
-          ,Razorpay and other Payment Integration Blogs."
-        />
+      
         <meta
           name="keywords"
           content="Makarand R React JS Developer React Native Developer NIT Trichy QR code generator"

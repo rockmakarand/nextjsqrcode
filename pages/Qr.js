@@ -82,6 +82,12 @@ const signUserOut = () => {
       
     });
   };
+  const updateclick=()=>{
+    click++;
+    setClick(click);
+    return setClick();
+
+  }
 
   const fetchData = async () => {
     try {
@@ -111,6 +117,7 @@ shortenedLink:"",
 
  const [tran, setTran] = useState([]);
  const [trans, setTrans] = useState([]);
+ const [click, setClick]=useState(0)
 
  const [progress, setProgress] = useState(0);
  const[payid, setPayid]=useState("")
@@ -241,7 +248,7 @@ async function displayRazorpay()
 
   const options = 
   {
-      key: "rzp_test_bopFqT94fTv9Om", // Enter the Key ID generated from the Dashboard
+      key: "rzp_test_bopFqT94fTv9Om", 
       amount: 100,
       order_id: response.data.id,
       currency: "INR",
@@ -291,7 +298,7 @@ useEffect(() => {
 }, []);
 
 
-
+if(user)
   return (
     
    
@@ -404,14 +411,15 @@ if(user&&user.uid===userId)
  return(
  <div>
    {user?.uid===userId&&payid&&(
-    <h5>{shortenedLink|| <Skeleton height={30} width={300} style={{backgroundColor:'#DFF6FF'}} />}</h5>
-    
+    <a href={shortenedLink} onClick={updateclick}>{shortenedLink}</a>
+   
    
   )}
  </div>
  )
 })}
-          
+ 
+
           <br/>
          
           <br/>
@@ -455,6 +463,20 @@ if(user&&user.uid===userId)
       }
       <br/>
       <br/>
+      {trans.map(({
+  credit, payid, userId
+}) =>
+{
+ return(
+ <div>
+   {user?.uid===userId&&!payid&&(
+  <button onClick={displayRazorpay} className="ouu"><p style={{color:'white'}}>Make a Payment to get short url</p></button>
+               
+   
+  )}
+ </div>
+ )
+})}
        {user&&!payid&& (
                       <button onClick={displayRazorpay} className="ouu"><p style={{color:'white'}}>Make a Payment to get short url</p></button>
                        
