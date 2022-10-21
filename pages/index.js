@@ -4,6 +4,7 @@ import Login from './Login'
 import Qr from './Qr'
 import Head from 'next/head'
 import Pay from './Pay'
+import Qrreader from './Qrreader'
 
 const index = () => {
   return (
@@ -62,9 +63,11 @@ const index = () => {
         <script async src="https://cdn.splitbee.io/sb.js"></script>
       </Head>
       <Login></Login>
-      <Qr/>
 
+      <Qr/>
       <Pay/>
+      <Qrreader/>
+
     </div>
   )
 }
