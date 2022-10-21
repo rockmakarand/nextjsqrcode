@@ -208,7 +208,7 @@ const downloadQRCode = () => {
   console.log(qrCodeURL)
   let aEl = document.createElement("a");
   aEl.href = qrCodeURL;
-  aEl.download = "QR_Code.png";
+  aEl.download = "QR.png";
   document.body.appendChild(aEl);
   aEl.click();
   document.body.removeChild(aEl);
@@ -396,12 +396,14 @@ if(user&&user.uid===userId)
   return(
   <div className="  border mt-3 p-3 w-40 bg-red " key={id}  >
     <QRCode
+    id="id"
       value={gname|| <Skeleton height={30} width={300} style={{backgroundColor:'DFF6FF'}} />}
     />
     <br/>
         <br/>
         <h5>{name|| <Skeleton height={30} width={300} style={{backgroundColor:'#DFF6FF'}} />}</h5>
         <br/>
+        <h4 onClick={downloadQRCode}>Download </h4>
           
            
             {trans.map(({
@@ -496,7 +498,7 @@ if(user&&user.uid===userId)
         </title>
         <meta
           name="description"
-          content="Gautham Vijayan's Portfolio showcasing his React and React Native Projects. Also read Gautham Vijayan's 
+          content="Makarand's Portfolio showcasing his React and React Native Projects. Also read Gautham Vijayan's 
           blogs about 
           Stripe
           ,Razorpay and other Payment Integration Blogs."
