@@ -312,7 +312,7 @@ if(user)
      {isLoading && <p>Loading...</p>}
 
      
-<h1>Welcome, {user?.displayName||<Skeleton count={10} style={{backgroundColor:'#DFF6FF'}}/>}</h1>  
+<h1>Welcome, {user?.displayName}</h1>  
 <br/>
 
 <Button onClick={signUserOut} className="btn btn-success">Sign out</Button>
@@ -380,6 +380,23 @@ if(user)
 
       
       <div>
+      {isLoading === true && (
+        <>
+          <div className="card">
+            <h1>
+            <Skeleton count={10} style={{backgroundColor:'#DFF6FF'}}/>
+            </h1>
+            <h2>
+            <Skeleton count={10} style={{backgroundColor:'#DFF6FF'}}/>
+            </h2>
+            <h3>
+            <Skeleton count={10} style={{backgroundColor:'#DFF6FF'}}/>
+            </h3>
+          </div>
+         
+         
+        </>
+      )}
          
           {tran.map(
           ({
@@ -488,7 +505,7 @@ if(user&&user.uid===userId)
     <br/>
     <br/>
     {user&&credit&& (
-                      <button onClick={handlePublish1} className="ouu"><p style={{color:'white'}}>submit</p></button>
+                      <button onClick={handlePublish1} className="ouu"><p style={{color:'white'}}>Click here to get shortURL of all your websites !</p></button>
                        
                      )}
           </div>
