@@ -414,11 +414,11 @@ if(user&&user.uid===userId)
   <div className="  border mt-3 p-3 w-40 bg-red " key={id}  >
     <QRCode
     id="id"
-      value={gname|| <Skeleton height={30} width={300} style={{backgroundColor:'DFF6FF'}} />}
+      value={gname|| <Skeleton height={30} width={300} style={{backgroundColor:'#D7D3D3'}} />}
     />
     <br/>
         <br/>
-        <h5>{name|| <Skeleton height={30} width={300} style={{backgroundColor:'#DFF6FF'}} />}</h5>
+        <h5>{name|| <Skeleton height={30} width={300} style={{backgroundColor:'D7D3D3'}} />}</h5>
         <br/>
         <h4 onClick={downloadQRCode}>Download </h4>
           
